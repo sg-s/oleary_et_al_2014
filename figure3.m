@@ -15,13 +15,16 @@ mex run_comp.cpp
 
 rang = 2.0e-1;
 
-nplot = 20;
+nplot = 30;
 
+% all time parameters in ms 
 dt = 0.1;
 taug = 1.0e2;
 taum = 10*taug;
 tstop = 600*taug;
 ms_per_samp = tstop/1000;
+
+
 e_na = 30;
 e_leak = -50;
 

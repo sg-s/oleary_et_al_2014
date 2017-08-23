@@ -1,4 +1,7 @@
-//just run to get membrane trace etc, no regulation
+// basic one-compartment 7-conductance neuron model
+// as in Prinz et al 2003
+// written by Tim O'Leary
+// 
 #include <cmath>
 #include <vector>
 #include "mex.h"
@@ -15,7 +18,10 @@
 
 using namespace std;
 
-// usage [output] = f([dt tstop res],[gbars]
+// usage [output] = f([dt tstop dt],[gbars]
+// 1 -- voltage
+// 2 -- calcium concentration 
+// 3--end not sure??
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
     double *output;
@@ -28,6 +34,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     double *state, *full_state;
     
     //input + params
+    // prhs contains the two arguments in the MATLAB wrapper
     simparams = mxGetPr(prhs[0]);
     dt = simparams[0];
     tstop = simparams[1];
@@ -73,18 +80,15 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     
     state_dim = cell.get_vcgs_dim();
     state = new double[state_dim];
-    //full_state_dim = cell.get_state_dim();
-    //full_state = new double[full_state_dim];
-    
-    //mexPrintf("dim = %d\n", state_dim);
+
     
     plhs[0] = mxCreateDoubleMatrix(state_dim, ((int)nits)/((int)res), mxREAL);
-    //plhs[0] = mxCreateDoubleMatrix(state_dim, nits, mxREAL);
+
     output = mxGetPr(plhs[0]);
     
     //integration loop
     for(int I = 0, i=0; i<nits; i++)
-    //for(int i=0; i<nits; i++)
+
     {
         (void) cell.integrate(dt);
         if (i%res == 0)
